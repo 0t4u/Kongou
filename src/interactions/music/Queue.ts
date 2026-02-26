@@ -1,5 +1,4 @@
-import { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, RESTPostAPIChatInputApplicationCommandsJSONBody, SlashCommandBuilder } from 'discord.js';
 import { Kongou } from '../../Kongou';
 import { UserTrack } from '../../modules/Queue';
 import { CommandOptions, Interaction } from '../../structure/Interaction';

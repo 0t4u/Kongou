@@ -1,5 +1,4 @@
-import { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
-import {GuildMember, SlashCommandBuilder, TextChannel, VoiceChannel} from 'discord.js';
+import {GuildMember, RESTPostAPIChatInputApplicationCommandsJSONBody, SlashCommandBuilder, TextChannel, VoiceChannel} from 'discord.js';
 import { LoadType, Track } from 'shoukaku';
 import { Kongou } from '../../Kongou';
 import { UserTrack } from '../../modules/Queue';
