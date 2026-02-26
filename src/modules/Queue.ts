@@ -62,13 +62,17 @@ export class Queue extends EventEmitter {
 		if (this.initialized)
 			throw new Error('This queue is already connected');
 
-		const connection = await this.client.shoukaku.joinVoiceChannel({
+		this.player = await this.client.shoukaku.joinVoiceChannel({
 			guildId: this.guild.id,
 			channelId: this.voiceChannel.id,
 			shardId: this.guild.shardId
 		});
 
-		this.player = new Player(connection);
+		this.player.on('start', () => this.onTrackStart());
+		this.player.on('end', () => this.onTrackEnd());
+		this.player.on('stuck', () => this.onTrackStuck());
+		this.player.on('exception', (data) => this.onTrackException(data));
+		this.player.on('closed', () => this.onWebsocketClosedEvent());
 
 		this.initialized = true;
 		this.emit('connected', this);

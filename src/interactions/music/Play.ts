@@ -37,7 +37,7 @@ export default class Play extends Interaction {
 		if (!node)
 			throw new Error('No nodes available');
 		const result = await node.rest.resolve(query);
-		if (!result || [ LoadType.Error, LoadType.Empty ].includes(result.loadType))
+		if (!result || [ LoadType.ERROR, LoadType.EMPTY ].includes(result.loadType))
 			return await context.sendInteractionMessage('Unfortunately, there are no results for your query');
 		const member = context.interaction.member! as GuildMember;
 		const player = await this.client.createGuildPlayer({
@@ -48,7 +48,7 @@ export default class Play extends Interaction {
 
 		let track: Track;
 
-		if (result.loadType === LoadType.Playlist) {
+		if (result.loadType === LoadType.PLAYLIST) {
 			for (const track of result.data.tracks) {
 				const userTrack = {
 					...track,
@@ -56,7 +56,7 @@ export default class Play extends Interaction {
 				} as UserTrack;
 				player.tracks.push(userTrack);
 			}
-		} else if (result.loadType === LoadType.Search) {
+		} else if (result.loadType === LoadType.SEARCH) {
 			track = result.data[0];
 			const userTrack = {
 				...track,
@@ -75,7 +75,7 @@ export default class Play extends Interaction {
 			player.stopped = false;
 			await player.playQueue();
 		}
-		if (result.loadType === LoadType.Playlist)
+		if (result.loadType === LoadType.PLAYLIST)
 
 			await context.sendInteractionMessage(`Loaded ${result.data.info.name} with ${result.data.tracks.length} track(s) in queue!`);
 		else

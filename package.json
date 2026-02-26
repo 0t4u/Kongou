@@ -42,7 +42,7 @@
     "discord.js": "^14.18.0",
     "indomitable": "^4.1.0",
     "pino": "^9.6.0",
-    "shoukaku": "github:shipgirlproject/Shoukaku#cd319abde19b23a93d9367a6b28be5077e22e953"
+    "shoukaku": "github:shipgirlproject/Shoukaku#83addad"
   },
   "devDependencies": {
     "@shipgirl/eslint-config": "^0.4.0",

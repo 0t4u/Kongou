@@ -8,7 +8,7 @@ import {
 	TextBasedChannel
 } from 'discord.js';
 import { BaseLogger } from 'pino';
-import { Shoukaku, Events, createDiscordJSOptions, PlayerEventType } from 'shoukaku';
+import { Shoukaku, Connectors } from 'shoukaku';
 import { ClientIpc } from './modules/ClientIpc';
 import { EventsManager } from './modules/Events';
 import { Interactions } from './modules/Interactions';
@@ -25,43 +25,15 @@ export class Kongou extends Client {
 	constructor(options: ClientOptions) {
 		super(options);
 		this.logger = Logger;
-		this.shoukaku = new Shoukaku({
-			userId: '484590604106465291',
-			nodes: Lavalink,
-			connectorOptions: createDiscordJSOptions(this)
-		}, ShoukakuOptions);
+		this.shoukaku = new Shoukaku(new Connectors.DiscordJS(this), Lavalink, ShoukakuOptions);
 		this.events = new EventsManager(this);
 		this.interactions = new Interactions(this);
 		this.ipc = new ClientIpc(this);
 		this.queue = new Map();
 		this.shoukaku
-			.on(Events.Ready, node => this.logger.info(`Lavalink Node: ${node.name} is now ready`))
-			.on(Events.Disconnect, node => this.logger.warn(`Lavalink Node: ${node.name} is disconnected.`))
-			.on(Events.Error, (_, error) => this.logger.error(error, 'Lavalink threw an error.'))
-			.on(Events.PlayerEvent, (_, data) => {
-				const queue = this.queue.get(data.guildId);
-
-				if (!queue) return;
-
-				switch (data.type) {
-					case PlayerEventType.TrackStartEvent:
-						queue.onTrackStart();
-						break;
-					case PlayerEventType.TrackEndEvent:
-						queue.onTrackEnd();
-						break;
-					case PlayerEventType.TrackStuckEvent:
-						queue.onTrackStuck();
-						break;
-					case PlayerEventType.TrackExceptionEvent:
-						queue.onTrackException(data);
-						break;
-					case PlayerEventType.WebsocketClosedEvent:
-						queue.onWebsocketClosedEvent();
-						break;
-
-				}
-			});
+			.on('ready', node => this.logger.info(`Lavalink Node: ${node} is now ready`))
+			.on('disconnect', node => this.logger.warn(`Lavalink Node: ${node} is disconnected.`))
+			.on('error', (_, error) => this.logger.error(error, 'Lavalink threw an error.'))
 
 		if (options.ws?.buildStrategy)
 			this.logger.debug(`Detected a build strategy function. Function: ${options.ws.buildStrategy.toString()}`);
@@ -157,7 +129,7 @@ export class Kongou extends Client {
 			this.events.load(),
 			this.interactions.load()
 		]);
-		await this.shoukaku.connect();
+		// await this.shoukaku.connect();
 		this.ipc.listen();
 		this.logger.debug(`Required modules for [${this.constructor.name}] loaded! Logging in....`);
 		await super.login(token);
